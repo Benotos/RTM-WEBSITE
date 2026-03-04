@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RETURN TO MEMES | The Cult</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #050505; 
+            color: white; 
+            overflow-x: hidden; 
+            cursor: crosshair; 
+        }
+        h1, h2, h3, .meme-font { font-family: 'Anton', sans-serif; text-transform: uppercase; }
+        
+        /* Subtle Web3 Grid Background for depth */
+        .bg-grid {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
+
+        /* Custom MLG Cursor */
+        .custom-cursor { 
+            position: fixed; top: 0; left: 0; width: 30px; height: 30px; 
+            border: 2px solid #39ff14; border-radius: 50%; 
+            pointer-events: none; z-index: 9999; 
+            transform: translate(-50%, -50%); transition: transform 0.05s linear; 
+            mix-blend-mode: difference;
+        }
+        .custom-cursor::after {
+            content: ''; position: absolute; top: 50%; left: 50%; 
+            width: 4px; height: 4px; background: red; border-radius: 50%; 
+            transform: translate(-50%, -50%);
+        }
+
+        /* Navbar Link Hover Effect */
+        .nav-link { position: relative; overflow: hidden; display: inline-block; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px;
+            background-color: #39ff14; transform: translateX(-101%); transition: transform 0.3s ease;
+        }
+        .nav-link:hover::after { transform: translateX(0); }
+
+        /* Marquee */
+        .marquee-wrapper { white-space: nowrap; overflow: hidden; box-sizing: border-box; }
+        .marquee-content { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; }
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        
+        /* Chaotic Glitch Effect */
+        .glitch:hover { animation: glitch 0.2s linear infinite; color: #39ff14; }
+        @keyframes glitch { 
+            0% { transform: translate(2px, 2px); } 25% { transform: translate(-2px, -2px); } 
+            50% { transform: translate(2px, -2px); } 75% { transform: translate(-2px, 2px); } 
+            100% { transform: translate(2px, 2px); } 
+        }
+
+        /* 3D Tilt Card Effect */
+        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); }
+        .tilt-card-inner { transform: translateZ(30px); }
+
+        /* FAQ Accordion */
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .faq-item.active .faq-answer { max-height: 200px; }
+        .faq-icon { transition: transform 0.3s ease; }
+        .faq-item.active .faq-icon { transform: rotate(45deg); color: #39ff14; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #39ff14; }
+
+        /* Gallery Image Effects */
+        .meme-card img.main-art { filter: grayscale(40%); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .meme-card:hover img.main-art { filter: grayscale(0%); transform: scale(1.1) rotate(2deg); box-shadow: 0 0 30px rgba(57,255,20,0.4); z-index: 20; position: relative; }
+    </style>
+</head>
+<body class="antialiased selection:bg-green-500 selection:text-black">
+
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="bg-grid"></div>
+
+    <nav id="navbar" class="fixed top-0 left-0 w-full p-4 md:px-8 md:py-5 z-50 flex justify-between items-center bg-black/40 backdrop-blur-lg border-b border-white/5 transition-transform duration-300 -translate-y-full">
+        <a href="index.html" class="text-3xl meme-font text-white drop-shadow-[0_0_10px_rgba(57,255,20,0.8)] tracking-widest hover:scale-105 transition-transform">
+            $MEME
+        </a>
+        <div class="flex gap-6 md:gap-10 items-center">
+            <a href="tokenomics.html" class="text-lg md:text-xl meme-font text-gray-300 hover:text-white transition-colors nav-link">TOKENOMICS</a>
+            <a href="buy.html" class="text-lg md:text-xl meme-font text-gray-300 hover:text-white transition-colors nav-link tracking-wide text-green-400">HOW TO BUY</a>
+        </div>
+    </nav>
+
+    <div id="preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black p-4">
+        <div class="max-w-md w-full border-4 border-gray-700 bg-gray-900/80 backdrop-blur-xl p-8 rounded-2xl text-center shadow-[0_0_50px_rgba(57,255,20,0.2)]">
+            <img src="clippy.png" class="w-24 h-24 mx-auto mb-6 animate-bounce drop-shadow-[0_0_15px_#39ff14]" alt="Clippy">
+            <p class="font-mono text-sm md:text-base mb-8 text-green-400">"It looks like you're trying to abandon utility and Return to Memes. Would you like some help with that?"</p>
+            <button id="enter-btn" class="w-full bg-green-500 text-black px-6 py-4 font-black text-2xl hover:bg-green-400 transition-colors uppercase tracking-widest meme-font shadow-[4px_4px_0px_#fff] hover:shadow-[0px_0px_0px_#fff] hover:translate-y-1 hover:translate-x-1">HELL YES</button>
+        </div>
+    </div>
+
+    <section id="hero" class="relative min-h-[100svh] flex flex-col items-center justify-center overflow-hidden pt-10 px-4">
+        <div class="absolute inset-0 z-0 opacity-40 pointer-events-none">
+            <img src="meme1.webp" class="absolute top-20 left-5 md:left-20 w-32 md:w-64 parallax-layer rounded-lg object-cover" data-speed="-2" alt="Art 1">
+            <img src="meme2.webp" class="absolute bottom-32 right-5 md:right-20 w-40 md:w-72 parallax-layer rounded-lg object-cover" data-speed="3" alt="Art 2">
+            <img src="meme3.webp" class="absolute top-1/4 right-1/4 w-24 md:w-48 parallax-layer rounded-lg object-cover hidden md:block" data-speed="-1.5" alt="Art 3">
+            <img src="meme4.webp" class="absolute bottom-1/4 left-1/4 w-28 md:w-56 parallax-layer rounded-lg object-cover hidden md:block" data-speed="2.5" alt="Art 4">
+        </div>
+        
+        <div class="z-10 text-center relative pointer-events-none mt-[-10vh]">
+            <h1 class="text-7xl md:text-[11rem] leading-[0.85] tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-green-300 to-green-600 drop-shadow-[0_0_40px_rgba(57,255,20,0.4)] hero-title-anim opacity-0 translate-y-20">
+                RETURN TO<br>MEMES
+            </h1>
+            <p class="mt-6 text-xl md:text-3xl font-mono text-gray-400 hero-sub-anim opacity-0">The Trench is calling.</p>
+        </div>
+
+        <img src="gigachad.png" class="absolute bottom-0 left-0 w-40 md:w-72 h-auto z-20 hero-prop translate-y-full opacity-0 drop-shadow-[0_-10px_30px_rgba(255,255,255,0.1)]" alt="Gigachad">
+        <img src="sigma.png" class="absolute bottom-0 right-0 w-40 md:w-72 h-auto z-20 hero-prop translate-y-full opacity-0 drop-shadow-[0_-10px_30px_rgba(255,255,255,0.1)]" alt="Sigma">
+        
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 cursor-crosshair" id="popcat-btn">
+            <img src="popcat.png" class="w-24 h-24 md:w-32 md:h-32 object-contain drop-shadow-[0_0_20px_#fff] hover:scale-110 transition-transform cursor-pointer" alt="Popcat">
+        </div>
+    </section>
+
+    <div class="w-full bg-green-500 text-black py-4 md:py-6 border-y-8 border-white -rotate-2 md:-rotate-1 relative z-30 shadow-[0_0_40px_rgba(57,255,20,0.4)] scale-105">
+        <div class="marquee-wrapper font-black text-3xl md:text-5xl uppercase tracking-widest meme-font">
+            <div class="marquee-content">
+                PNUT vs RETARDIO ✦ DOGWIFHAT ✦ CATWIFMASK ✦ FARTCOIN ✦ PONKE ✦ MOODENG ✦ BONK ✦ DOLAN ✦ GIGACHAD ✦ SIGMA ✦ UNICORNFARTDUST ✦ BILLY ✦ FWOG ✦ 
+            </div>
+        </div>
+    </div>
+
+    <section class="py-32 px-4 md:px-10 max-w-5xl mx-auto text-center relative z-10">
+        <h2 class="text-5xl md:text-7xl meme-font mb-10 text-gray-500 reveal-text opacity-0 translate-y-10">THE <span class="text-white">MANIFESTO</span></h2>
+        <p class="text-xl md:text-3xl font-mono text-gray-300 leading-relaxed reveal-text opacity-0 translate-y-10 mb-8">
+            We are tired of the fake utility. We are tired of the roadmaps that lead nowhere. We are tired of the VC dumps and the influencer rugs.
+        </p>
+        <p class="text-xl md:text-3xl font-mono text-green-400 leading-relaxed reveal-text opacity-0 translate-y-10">
+            We were born in the trenches, and to the trenches we return. No false promises. Pure meme velocity. This is not a project; this is a cult.
+        </p>
+    </section>
+
+    <section id="trench" class="relative py-24 px-4 md:px-10 min-h-[80svh] flex flex-col justify-center bg-[#0a0a0a] border-y border-gray-800">
+        <h2 class="text-5xl md:text-8xl text-center mb-16 text-gray-600 meme-font drop-shadow-lg">THE BATTLEFIELD</h2>
+        
+        <div class="relative w-full max-w-5xl mx-auto h-64 md:h-96 border-4 border-gray-800 bg-gray-900/40 rounded-3xl overflow-hidden backdrop-blur-md mb-20 flex items-center shadow-[0_0_50px_rgba(0,0,0,0.5)]" id="standoff-zone">
+            <img src="dogwifhat.png" class="absolute left-[-20%] w-32 md:w-56 h-auto drop-shadow-[0_0_30px_rgba(234,179,8,0.5)] standoff-left" alt="Dogwifhat">
+            <img src="catwifmask.jpg" class="absolute right-[-20%] w-32 md:w-56 h-auto drop-shadow-[0_0_30px_rgba(59,130,246,0.5)] standoff-right" alt="Catwifmask">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-6xl md:text-9xl font-black text-red-500 opacity-0 scale-50 vs-text meme-font drop-shadow-[0_0_30px_red]">VS</div>
+        </div>
+
+        <div class="flex justify-center items-end gap-4 md:gap-12 max-w-3xl mx-auto border-b-2 border-gray-800 pb-2 w-full relative z-10">
+            <img src="chillguy.png" class="w-24 md:w-40 h-auto hover:-translate-y-6 transition-transform duration-300 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]" alt="Chillguy">
+            <img src="brett.jpg" class="w-32 md:w-56 h-auto hover:-translate-y-6 transition-transform duration-300 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]" alt="Brett">
+            <img src="ponke.jpg" class="w-28 md:w-48 h-auto hover:-translate-y-6 transition-transform duration-300 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]" alt="Ponke">
+        </div>
+    </section>
+
+    <section class="py-32 px-4 md:px-10 max-w-7xl mx-auto relative z-10">
+        <h2 class="text-5xl md:text-7xl meme-font text-center mb-20 text-white">WHY WE ARE <span class="text-green-500">HERE</span></h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-gray-900 border-2 border-gray-800 rounded-2xl p-8 text-center tilt-card hover:border-green-500 transition-colors">
+                <div class="tilt-card-inner">
+                    <div class="text-6xl mb-6">🚫</div>
+                    <h3 class="text-3xl meme-font text-white mb-4">ZERO UTILITY</h3>
+                    <p class="font-mono text-gray-400 text-sm">We are not building a DEX. We are not building a bridge. We are building absolutely nothing. Enjoy the art.</p>
+                </div>
+            </div>
+            <div class="bg-gray-900 border-2 border-gray-800 rounded-2xl p-8 text-center tilt-card hover:border-green-500 transition-colors">
+                <div class="tilt-card-inner">
+                    <div class="text-6xl mb-6">🔥</div>
+                    <h3 class="text-3xl meme-font text-white mb-4">LP BURNED</h3>
+                    <p class="font-mono text-gray-400 text-sm">Liquidity is locked away forever in the fiery depths. The dev cannot rug you. Only the chart decides our fate.</p>
+                </div>
+            </div>
+            <div class="bg-gray-900 border-2 border-gray-800 rounded-2xl p-8 text-center tilt-card hover:border-green-500 transition-colors">
+                <div class="tilt-card-inner">
+                    <div class="text-6xl mb-6">🤝</div>
+                    <h3 class="text-3xl meme-font text-white mb-4">COMMUNITY OWNED</h3>
+                    <p class="font-mono text-gray-400 text-sm">Contract is renounced. There are no admin keys. $MEME belongs to the degenerates who hold it.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="py-32 px-4 md:px-10 bg-black/80 relative border-t border-gray-800 backdrop-blur-sm">
+        <h2 class="text-5xl md:text-8xl text-center mb-16 meme-font"><span class="text-green-500">SACRED</span> ARCHIVES</h2>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 max-w-7xl mx-auto" id="art-grid">
+            </div>
+    </section>
+
+    <section class="py-32 px-4 md:px-10 max-w-4xl mx-auto relative z-10 border-t border-gray-800">
+        <h2 class="text-5xl md:text-7xl meme-font text-center mb-16 text-white">DEGEN <span class="text-green-500">FAQ</span></h2>
+        
+        <div class="space-y-4">
+            <div class="faq-item bg-gray-900 border-2 border-gray-800 rounded-xl cursor-pointer hover:border-green-500 transition-colors">
+                <div class="p-6 flex justify-between items-center">
+                    <h3 class="font-mono font-bold text-lg md:text-xl text-white">WEN BINANCE?</h3>
+                    <span class="text-2xl text-gray-500 faq-icon">+</span>
+                </div>
+                <div class="faq-answer px-6">
+                    <p class="font-mono text-gray-400 pb-6 text-sm">Binance will list us when they realize utility is a scam and memes are the only true store of value. Until then, we trade in the trenches.</p>
+                </div>
+            </div>
+
+            <div class="faq-item bg-gray-900 border-2 border-gray-800 rounded-xl cursor-pointer hover:border-green-500 transition-colors">
+                <div class="p-6 flex justify-between items-center">
+                    <h3 class="font-mono font-bold text-lg md:text-xl text-white">WHAT IS THE ROADMAP?</h3>
+                    <span class="text-2xl text-gray-500 faq-icon">+</span>
+                </div>
+                <div class="faq-answer px-6">
+                    <p class="font-mono text-gray-400 pb-6 text-sm">Phase 1: Launch. Phase 2: Vibe. Phase 3: Total Domination. There are no dates, only destiny.</p>
+                </div>
+            </div>
+
+            <div class="faq-item bg-gray-900 border-2 border-gray-800 rounded-xl cursor-pointer hover:border-green-500 transition-colors">
+                <div class="p-6 flex justify-between items-center">
+                    <h3 class="font-mono font-bold text-lg md:text-xl text-white">IS IT SAFE?</h3>
+                    <span class="text-2xl text-gray-500 faq-icon">+</span>
+                </div>
+                <div class="faq-answer px-6">
+                    <p class="font-mono text-gray-400 pb-6 text-sm">LP is burned. Mint is revoked. Tax is zero. It's as safe as a volatile internet joke coin can possibly be.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="w-full bg-white text-black py-3 md:py-4 border-y-8 border-green-500 rotate-1 relative z-30 shadow-[0_0_40px_rgba(255,255,255,0.2)] scale-105">
+        <div class="marquee-wrapper font-black text-2xl md:text-4xl uppercase tracking-widest meme-font">
+            <div class="marquee-content" style="animation-direction: reverse;">
+                DON'T FADE THE CULT ✦ WE ARE GOING HIGHER ✦ DON'T FADE THE CULT ✦ WE ARE GOING HIGHER ✦ DON'T FADE THE CULT ✦ WE ARE GOING HIGHER ✦ 
+            </div>
+        </div>
+    </div>
+
+    <section class="relative min-h-[60svh] flex flex-col items-center justify-center bg-[#050505] overflow-hidden px-4 text-center pb-20 pt-20">
+        <h2 class="text-6xl md:text-9xl mb-12 z-10 glitch meme-font text-white drop-shadow-[0_0_20px_rgba(57,255,20,0.2)]">JOIN THE CULT</h2>
+        
+        <div class="relative z-10 group mt-4">
+            <button id="cta-btn" class="bg-red-600 text-white px-10 py-6 md:px-16 md:py-8 text-4xl md:text-6xl font-black rounded-2xl hover:bg-red-500 transition-colors border-4 md:border-8 border-red-800 shadow-[0_0_60px_rgba(220,38,38,0.8)] meme-font tracking-widest relative overflow-hidden">
+                BUY $MEME
+            </button>
+            
+            <img src="moodeng.png" class="absolute -top-16 -left-10 md:-left-20 w-28 h-28 object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-bounce z-20 drop-shadow-[0_0_15px_pink]" alt="Moodeng">
+            <img src="moodeng.png" class="absolute -bottom-16 -right-10 md:-right-20 w-28 h-28 object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-bounce z-20 drop-shadow-[0_0_15px_pink]" style="animation-delay: 0.1s;" alt="Moodeng">
+        </div>
+
+        <div id="bonk-smash" class="fixed inset-0 bg-black z-[200] hidden flex-col items-center justify-center">
+            <h1 class="text-[150px] md:text-[250px] text-red-600 font-black rotate-[-15deg] meme-font drop-shadow-[0_0_100px_red]">BONK!</h1>
+        </div>
+    </section>
+
+    <footer class="border-t-2 border-gray-800 pt-16 pb-8 bg-black relative z-10">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl meme-font text-gray-500 mb-8">THE TRENCH LINKS</h2>
+            
+            <div class="flex justify-center gap-6 md:gap-12 mb-16 flex-wrap">
+                <a href="#" class="text-white hover:text-green-500 font-mono font-bold text-xl transition-colors">TWITTER (X)</a>
+                <a href="#" class="text-white hover:text-green-500 font-mono font-bold text-xl transition-colors">TELEGRAM</a>
+                <a href="#" class="text-white hover:text-green-500 font-mono font-bold text-xl transition-colors">DEXSCREENER</a>
+            </div>
+
+            <p class="font-mono text-gray-600 text-xs max-w-3xl mx-auto leading-relaxed border-t border-gray-800 pt-8">
+                $MEME is a meme coin with no intrinsic value or expectation of financial return. There is no formal team or roadmap. The coin is completely useless and for entertainment purposes only. Do your own research. Welcome to the Cult.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Cursor Logic
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+        });
+        document.addEventListener('mousedown', () => cursor.style.borderColor = 'red');
+        document.addEventListener('mouseup', () => cursor.style.borderColor = '#39ff14');
+
+        // Smart Navbar
+        let lastScrollY = window.scrollY;
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > lastScrollY && window.scrollY > 100) {
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+            }
+            lastScrollY = window.scrollY;
+        });
+
+        // Generate Sacred Archives
+        const grid = document.getElementById('art-grid');
+        const lurkers = ['billy.png', 'fwog.jpg', 'mog.png']; 
+        
+        for(let i = 5; i <= 15; i++) {
+            const lurker = lurkers[i % lurkers.length];
+            const html = `
+                <div class="aspect-square bg-gray-900 rounded-2xl relative group overflow-hidden border-2 border-gray-800 hover:border-green-500 meme-card opacity-0 gallery-item">
+                    <img src="meme${i}.webp" alt="Sacred Art ${i}" class="w-full h-full object-cover main-art">
+                    <div class="absolute -bottom-20 right-0 w-20 h-20 group-hover:bottom-0 transition-all duration-500 z-10">
+                        <img src="${lurker}" alt="Lurker" class="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+                    </div>
+                </div>
+            `;
+            grid.insertAdjacentHTML('beforeend', html);
+        }
+
+        // FAQ Accordion Logic
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active', 'border-green-500'));
+                if(!isActive) {
+                    item.classList.add('active', 'border-green-500');
+                }
+            });
+        });
+
+        // 3D Tilt Cards Logic
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            });
+        });
+
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Preloader Entrance
+        document.getElementById('enter-btn').addEventListener('click', () => {
+            const tl = gsap.timeline();
+            tl.to("#preloader", { yPercent: -100, duration: 1, ease: "power4.inOut" })
+              .to("#navbar", { y: 0, duration: 0.8, ease: "power3.out" }, "-=0.5")
+              .to(".hero-title-anim", { y: 0, opacity: 1, duration: 1.2, ease: "bounce.out" }, "-=0.8")
+              .to(".hero-sub-anim", { opacity: 1, duration: 1 }, "-=0.8")
+              .to(".hero-prop", { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out" }, "-=1");
+        });
+
+        // Hero Parallax
+        gsap.utils.toArray('.parallax-layer').forEach(layer => {
+            const speed = layer.getAttribute('data-speed');
+            gsap.to(layer, {
+                y: () => (ScrollTrigger.maxScroll(window) * speed) / 100,
+                ease: "none",
+                scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: true }
+            });
+        });
+
+        // Manifesto Reveal
+        gsap.to(".reveal-text", {
+            scrollTrigger: { trigger: ".reveal-text", start: "top 80%" },
+            y: 0, opacity: 1, duration: 1, stagger: 0.3, ease: "power3.out"
+        });
+
+        // Trench Standoff
+        const standoffTl = gsap.timeline({
+            scrollTrigger: { trigger: "#standoff-zone", start: "top 80%", end: "center center", scrub: 1 }
+        });
+        standoffTl.to(".standoff-left", { left: "15%", rotate: 10, duration: 1 })
+                  .to(".standoff-right", { right: "15%", rotate: -10, duration: 1 }, "<")
+                  .to(".vs-text", { opacity: 1, scale: 1, duration: 0.5 });
+
+        // Gallery Stagger
+        gsap.to(".gallery-item", {
+            scrollTrigger: { trigger: "#gallery", start: "top 70%" },
+            opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out"
+        });
+
+        // Popcat Bounce
+        document.getElementById('popcat-btn').addEventListener('click', function() {
+            gsap.fromTo(this, { scale: 0.9 }, { scale: 1.3, duration: 0.1, yoyo: true, repeat: 1 });
+        });
+
+        // THE BULLETPROOF BUY BUTTON REDIRECT
+        document.getElementById('cta-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            const smash = document.getElementById('bonk-smash');
+            smash.style.display = 'flex';
+            
+            gsap.fromTo(smash, { opacity: 0 }, { opacity: 1, duration: 0.1 });
+            gsap.fromTo("#bonk-smash h1", 
+                { scale: 5, opacity: 0 }, 
+                { scale: 1, opacity: 1, duration: 0.4, ease: "bounce.out" }
+            );
+            
+            // Forces the browser to load buy.html after exactly 1.2 seconds
+            setTimeout(() => {
+                window.location.href = 'buy.html';
+            }, 1200);
+        });
+    </script>
+</body>
+</html>

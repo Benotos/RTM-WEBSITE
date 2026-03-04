@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOW TO BUY | Return To Memes</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #050505; 
+            color: white; 
+            overflow-x: hidden; 
+            cursor: crosshair; 
+        }
+        h1, h2, h3, .meme-font { font-family: 'Anton', sans-serif; text-transform: uppercase; }
+        
+        .custom-cursor { 
+            position: fixed; top: 0; left: 0; width: 30px; height: 30px; 
+            border: 2px solid #39ff14; border-radius: 50%; 
+            pointer-events: none; z-index: 9999; 
+            transform: translate(-50%, -50%); transition: transform 0.05s linear; 
+            mix-blend-mode: difference;
+        }
+        .custom-cursor::after {
+            content: ''; position: absolute; top: 50%; left: 50%; 
+            width: 4px; height: 4px; background: red; border-radius: 50%; 
+            transform: translate(-50%, -50%);
+        }
+
+        .glitch:hover { animation: glitch 0.2s linear infinite; color: #39ff14; }
+        @keyframes glitch { 
+            0% { transform: translate(2px, 2px); } 25% { transform: translate(-2px, -2px); } 
+            50% { transform: translate(2px, -2px); } 75% { transform: translate(-2px, 2px); } 
+            100% { transform: translate(2px, 2px); } 
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #39ff14; }
+
+        .timeline-line {
+            background: linear-gradient(180deg, transparent, #39ff14, #39ff14, transparent);
+            box-shadow: 0 0 15px #39ff14;
+        }
+        
+        #jupiter-terminal {
+            background: #1c1c1c; 
+        }
+    </style>
+
+    <script src="https://plugin.jup.ag/plugin-v1.js" data-preload defer></script>
+</head>
+<body class="antialiased selection:bg-green-500 selection:text-black">
+
+    <div class="custom-cursor" id="cursor"></div>
+
+    <nav class="fixed top-0 left-0 w-full p-4 md:p-6 z-50 flex justify-between items-center mix-blend-difference bg-black/50 backdrop-blur-md">
+        <a href="index.html" class="text-2xl meme-font hover:text-green-400 transition-colors tracking-wider flex items-center gap-2">
+            <span class="text-red-500">◄</span> HOME
+        </a>
+        <a href="tokenomics.html" class="text-2xl meme-font hover:text-green-400 transition-colors tracking-wider">
+            TOKENOMICS <span class="text-red-500">►</span>
+        </a>
+    </nav>
+
+    <section class="relative pt-32 pb-16 px-4 flex flex-col items-center justify-center">
+        <img src="meme8.webp" class="absolute top-20 left-10 w-48 opacity-20 blur-sm pointer-events-none" alt="Bg Art">
+        <img src="meme9.webp" class="absolute bottom-0 right-10 w-64 opacity-20 blur-sm pointer-events-none" alt="Bg Art">
+
+        <h1 class="text-6xl md:text-[8rem] meme-font text-center leading-none text-white drop-shadow-[0_0_30px_rgba(57,255,20,0.6)] mb-4 hero-anim opacity-0 translate-y-10">
+            ENTER THE TRENCH
+        </h1>
+        <p class="text-gray-400 font-mono text-lg md:text-2xl mb-12 tracking-widest hero-anim opacity-0 translate-y-10">4 STEPS TO ASCENSION</p>
+    </section>
+
+    <section class="relative max-w-5xl mx-auto px-4 py-10 z-10">
+        <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 timeline-line hidden md:block origin-top scale-y-0" id="scroll-line"></div>
+
+        <div class="flex flex-col md:flex-row items-center justify-between mb-24 step-card opacity-0 translate-y-20 relative">
+            <div class="w-full md:w-5/12 text-center md:text-right mb-6 md:mb-0">
+                <h3 class="text-4xl meme-font text-green-400 mb-2">1. GET PHANTOM</h3>
+                <p class="font-mono text-gray-400 text-sm md:text-base">Download Phantom or your wallet of choice. If you lose your seed phrase, you're rugged.</p>
+            </div>
+            <div class="w-10 h-10 bg-black border-4 border-green-500 rounded-full z-10 hidden md:flex items-center justify-center shadow-[0_0_20px_#39ff14]"></div>
+            <div class="w-full md:w-5/12 flex justify-center md:justify-start">
+                <img src="dogwifhat.png" class="w-48 h-auto drop-shadow-[0_0_30px_rgba(234,179,8,0.5)] hover:scale-110 transition-transform" alt="Dogwifhat">
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row-reverse items-center justify-between mb-24 step-card opacity-0 translate-y-20 relative">
+            <div class="w-full md:w-5/12 text-center md:text-left mb-6 md:mb-0">
+                <h3 class="text-4xl meme-font text-green-400 mb-2">2. SECURE $SOL</h3>
+                <p class="font-mono text-gray-400 text-sm md:text-base">Have SOL in your wallet to switch to $MEME. Transfer from a CEX or buy directly in Phantom.</p>
+            </div>
+            <div class="w-10 h-10 bg-black border-4 border-green-500 rounded-full z-10 hidden md:flex items-center justify-center shadow-[0_0_20px_#39ff14]"></div>
+            <div class="w-full md:w-5/12 flex justify-center md:justify-end">
+                <img src="chillguy.png" class="w-40 h-auto drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] hover:-translate-y-4 transition-transform" alt="Chillguy">
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row items-center justify-between mb-24 step-card opacity-0 translate-y-20 relative">
+            <div class="w-full md:w-5/12 text-center md:text-right mb-6 md:mb-0">
+                <h3 class="text-4xl meme-font text-green-400 mb-2">3. CONNECT & SWAP</h3>
+                <p class="font-mono text-gray-400 text-sm md:text-base">Use the integrated Jupiter Terminal below. Connect your wallet, confirm the transaction, and become Gigachad.</p>
+            </div>
+            <div class="w-10 h-10 bg-black border-4 border-green-500 rounded-full z-10 hidden md:flex items-center justify-center shadow-[0_0_20px_#39ff14]"></div>
+            <div class="w-full md:w-5/12 flex justify-center md:justify-start">
+                <img src="popcat.png" class="w-48 h-auto drop-shadow-[0_0_20px_#fff] hover:scale-110 transition-transform" alt="Popcat">
+            </div>
+        </div>
+    </section>
+
+    <section class="relative min-h-[80svh] flex flex-col items-center justify-center px-4 border-t-4 border-green-500 bg-[#050505] pb-20 pt-10">
+        
+        <h2 class="text-5xl md:text-7xl meme-font text-center mb-10 glitch z-10">SECURE YOUR BAG</h2>
+
+        <div id="jupiter-terminal" class="relative z-10 w-full max-w-md rounded-2xl overflow-hidden shadow-[0_0_60px_rgba(57,255,20,0.3)] border-2 border-gray-800 hover:border-green-500 transition-colors duration-300 swap-terminal"></div>
+
+        <img src="gigachad.png" class="absolute -bottom-10 -left-10 md:left-10 w-48 md:w-72 h-auto drop-shadow-[0_0_40px_rgba(255,255,255,0.2)] z-0" alt="Gigachad">
+        <img src="moodeng.png" class="absolute top-10 right-10 w-24 h-24 drop-shadow-[0_0_20px_pink] animate-bounce z-0" alt="Moodeng">
+
+    </section>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+        });
+        document.addEventListener('mousedown', () => cursor.style.borderColor = 'red');
+        document.addEventListener('mouseup', () => cursor.style.borderColor = '#39ff14');
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.to(".hero-anim", {
+            y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power4.out", delay: 0.2
+        });
+
+        gsap.to("#scroll-line", {
+            scaleY: 1,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".step-card",
+                start: "top center",
+                end: "bottom center",
+                endTrigger: ".step-card:last-child",
+                scrub: true
+            }
+        });
+
+        gsap.utils.toArray('.step-card').forEach((card) => {
+            gsap.to(card, {
+                scrollTrigger: { trigger: card, start: "top 80%" },
+                y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.2)"
+            });
+        });
+
+        gsap.to(".swap-terminal", {
+            y: 10, duration: 3, yoyo: true, repeat: -1, ease: "sine.inOut"
+        });
+    </script>
+
+    <script>
+        // Use window.onload to ensure the plugin script from the <head> is fully loaded
+        window.onload = function() {
+            window.Jupiter.init({
+                displayMode: 'integrated',
+                integratedTargetId: 'jupiter-terminal', // Targets the div above
+                containerStyles: { 
+                    height: '500px' // Required to prevent collapsing
+                },
+                formProps: {
+                    swapMode: 'ExactIn',
+                    initialInputMint: 'So11111111111111111111111111111111111111112', // SOL
+                    initialOutputMint: 'DeGenz1111111111111111111111111111111111111', // *** PASTE YOUR CA HERE ***
+                    fixedMint: 'DeGenz1111111111111111111111111111111111111', // Locks output to your token
+                },
+            });
+        };
+    </script>
+</body>
+</html>

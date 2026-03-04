@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOKENOMICS | Return To Memes</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #050505; 
+            color: white; 
+            overflow-x: hidden; 
+            cursor: crosshair; 
+        }
+        h1, h2, h3, .meme-font { font-family: 'Anton', sans-serif; text-transform: uppercase; }
+        
+        /* Web3 Grid Background */
+        .bg-grid {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(57, 255, 20, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(57, 255, 20, 0.03) 1px, transparent 1px);
+        }
+
+        /* Custom MLG Cursor */
+        .custom-cursor { 
+            position: fixed; top: 0; left: 0; width: 30px; height: 30px; 
+            border: 2px solid #39ff14; border-radius: 50%; 
+            pointer-events: none; z-index: 9999; 
+            transform: translate(-50%, -50%); transition: transform 0.05s linear; 
+            mix-blend-mode: difference;
+        }
+        .custom-cursor::after {
+            content: ''; position: absolute; top: 50%; left: 50%; 
+            width: 4px; height: 4px; background: red; border-radius: 50%; 
+            transform: translate(-50%, -50%);
+        }
+
+        /* Hitmarker Effect for CA Copy */
+        .hitmarker {
+            position: fixed; width: 40px; height: 40px; pointer-events: none; z-index: 10000;
+            background-image: linear-gradient(to bottom right, transparent 45%, red 45%, red 55%, transparent 55%), linear-gradient(to top right, transparent 45%, red 45%, red 55%, transparent 55%);
+            transform: translate(-50%, -50%) scale(0); opacity: 0;
+        }
+
+        /* Chaotic Glitch Effect */
+        .glitch:hover { animation: glitch 0.2s linear infinite; color: #39ff14; }
+        @keyframes glitch { 
+            0% { transform: translate(2px, 2px); } 25% { transform: translate(-2px, -2px); } 
+            50% { transform: translate(2px, -2px); } 75% { transform: translate(-2px, 2px); } 
+            100% { transform: translate(2px, 2px); } 
+        }
+
+        /* Ticker Marquee */
+        .ticker-wrap { width: 100%; overflow: hidden; background: #39ff14; color: black; padding: 5px 0; border-top: 2px solid white; border-bottom: 2px solid white; }
+        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 15s linear infinite; font-weight: bold; font-family: 'Inter', monospace; }
+        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+
+        /* Fake Order Book Matrix */
+        .order-book { position: absolute; inset: 0; overflow: hidden; opacity: 0.1; font-family: monospace; font-size: 10px; line-height: 1; z-index: 0; pointer-events: none; }
+        .order-col { float: left; width: 10%; animation: scrollUp linear infinite; }
+        .text-buy { color: #39ff14; } .text-sell { color: #ff003c; }
+        @keyframes scrollUp { 0% { transform: translateY(100%); } 100% { transform: translateY(-100%); } }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #39ff14; }
+
+        /* The God Candle */
+        .god-candle {
+            background: linear-gradient(180deg, #39ff14 0%, #0a4005 100%);
+            box-shadow: 0 0 50px rgba(57, 255, 20, 0.8);
+            transform-origin: bottom;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-green-500 selection:text-black">
+
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="hitmarker" id="hitmarker"></div>
+    <div class="bg-grid"></div>
+
+    <nav id="navbar" class="fixed top-0 left-0 w-full p-4 md:px-8 md:py-5 z-50 flex justify-between items-center bg-black/40 backdrop-blur-lg border-b border-white/5 transition-transform duration-300">
+        <a href="index.html" class="text-3xl meme-font text-white drop-shadow-[0_0_10px_rgba(57,255,20,0.8)] tracking-widest hover:scale-105 transition-transform">
+            $MEME
+        </a>
+        <div class="flex gap-6 md:gap-10 items-center">
+            <a href="index.html" class="text-lg md:text-xl meme-font text-gray-300 hover:text-white transition-colors">HOME</a>
+            <a href="buy.html" class="text-lg md:text-xl meme-font text-gray-300 hover:text-white transition-colors tracking-wide text-green-400">HOW TO BUY</a>
+        </div>
+    </nav>
+
+    <section class="relative pt-40 pb-16 px-4 flex flex-col items-center justify-center">
+        <img src="meme10.webp" class="absolute top-20 right-10 w-48 opacity-20 blur-sm pointer-events-none float-anim" alt="Bg Art">
+        <img src="meme11.webp" class="absolute bottom-10 left-10 w-64 opacity-20 blur-sm pointer-events-none float-anim" style="animation-delay: 1s;" alt="Bg Art">
+
+        <h1 class="text-6xl md:text-[9rem] meme-font text-center leading-none text-transparent bg-clip-text bg-gradient-to-br from-white via-gray-300 to-gray-800 drop-shadow-[0_0_30px_rgba(255,255,255,0.3)] mb-4 title-anim translate-y-10 opacity-0">
+            THE NUMBERS
+        </h1>
+        <p class="text-green-500 font-mono text-lg md:text-2xl mb-12 tracking-widest title-anim translate-y-10 opacity-0">NO VC. NO PRESALE. JUST THE TRENCHES.</p>
+
+        <div class="relative w-full max-w-4xl group title-anim translate-y-10 opacity-0 z-20">
+            <div class="absolute -inset-1 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl blur opacity-30 group-hover:opacity-100 transition duration-500"></div>
+            <button id="copy-ca" class="relative w-full bg-black border-2 border-gray-700 hover:border-green-500 px-4 py-8 md:py-10 rounded-xl flex flex-col md:flex-row items-center justify-center gap-6 transition-all overflow-hidden cursor-crosshair">
+                <span class="text-gray-400 font-bold tracking-widest text-sm md:text-lg">CONTRACT:</span>
+                <span class="font-mono text-green-400 text-sm md:text-2xl break-all" id="ca-text">DeGenz1111111111111111111111111111111111111</span>
+                
+                <div class="absolute inset-0 bg-green-500 text-black flex items-center justify-center text-4xl meme-font translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    CLICK TO SECURE
+                </div>
+            </button>
+            <img src="moodeng.png" class="absolute -right-8 -top-12 w-32 h-32 drop-shadow-[0_0_20px_pink] animate-pulse pointer-events-none z-10" alt="Moodeng">
+        </div>
+    </section>
+
+    <div class="ticker-wrap shadow-[0_0_30px_rgba(57,255,20,0.5)] z-30 relative">
+        <div class="ticker-move">
+            $MEME VOLUME: INFINITY ✦ TAX: 0% ✦ MINT: REVOKED ✦ LP: BURNED ✦ NORMIES: SHAKEN OUT ✦ GIGACHADS: ACCUMULATING ✦ $MEME VOLUME: INFINITY ✦ TAX: 0% ✦ MINT: REVOKED ✦ LP: BURNED ✦ NORMIES: SHAKEN OUT ✦ GIGACHADS: ACCUMULATING ✦ 
+        </div>
+    </div>
+
+    <section class="py-32 px-4 max-w-7xl mx-auto relative z-10 border-b border-gray-800">
+        <h2 class="text-4xl md:text-7xl meme-font text-center mb-16 text-white drop-shadow-lg">METRICS OF <span class="text-green-500">ASCENSION</span></h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="bg-gray-900 border-4 border-gray-800 rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden stat-card opacity-0 translate-y-20 hover:border-green-500 transition-colors">
+                <h3 class="text-2xl text-gray-500 meme-font mb-4 z-10">TOTAL SUPPLY</h3>
+                <div class="text-3xl md:text-4xl lg:text-5xl tracking-tighter text-white font-black font-mono z-10" id="supply-counter">0</div>
+                <p class="text-sm font-mono text-green-400 mt-4 z-10">1 BILLION</p>
+                <img src="chillguy.png" class="absolute bottom-[-20%] right-[-10%] w-48 opacity-20" alt="Chillguy">
+            </div>
+
+            <div class="bg-gray-900 border-4 border-gray-800 rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden stat-card opacity-0 translate-y-20 hover:border-green-500 transition-colors">
+                <h3 class="text-2xl text-gray-500 meme-font mb-4 z-10">BUY / SELL TAX</h3>
+                <div class="text-7xl md:text-8xl text-green-500 font-black meme-font z-10 drop-shadow-[0_0_20px_#39ff14]">0%</div>
+                <p class="text-sm font-mono text-gray-300 mt-4 z-10">GIGACHAD DOESN'T PAY TAXES</p>
+                <img src="gigachad.png" class="absolute bottom-[-10%] right-[-10%] w-40 opacity-20" alt="Gigachad">
+            </div>
+
+            <div class="bg-gray-900 border-4 border-gray-800 rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden stat-card opacity-0 translate-y-20 hover:border-green-500 transition-colors">
+                <h3 class="text-2xl text-gray-500 meme-font mb-4 z-10">LIQUIDITY</h3>
+                <div class="text-5xl md:text-6xl text-orange-500 font-black meme-font z-10 glitch">BURNED</div>
+                <p class="text-sm font-mono text-gray-300 mt-4 z-10">FOREVER IN THE TRENCHES</p>
+                <img src="dogwifhat.png" class="absolute bottom-[-15%] right-[-5%] w-48 opacity-20" alt="Dogwifhat">
+            </div>
+
+            <div class="bg-gray-900 border-4 border-gray-800 rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden stat-card opacity-0 translate-y-20 hover:border-green-500 transition-colors">
+                <h3 class="text-2xl text-gray-500 meme-font mb-4 z-10">CONTRACT</h3>
+                <div class="text-5xl md:text-6xl text-white font-black meme-font z-10">RENOUNCED</div>
+                <p class="text-sm font-mono text-green-400 mt-4 z-10">NO DEV WALLET BS</p>
+                <img src="sigma.png" class="absolute bottom-[-10%] left-[-10%] w-40 opacity-20" alt="Sigma">
+            </div>
+
+            <div class="bg-gray-900 border-4 border-gray-800 rounded-3xl p-8 flex flex-col items-center text-center relative overflow-hidden stat-card opacity-0 translate-y-20 hover:border-green-500 transition-colors lg:col-span-2">
+                <h3 class="text-2xl text-gray-500 meme-font mb-4 z-10">TEAM ALLOCATION</h3>
+                <div class="text-5xl md:text-6xl text-red-500 font-black meme-font z-10">0.00%</div>
+                <p class="text-sm font-mono text-gray-300 mt-4 z-10 max-w-md mx-auto">100% OF SUPPLY TO THE LIQUIDITY POOL. FAIR LAUNCH. COMMUNITY DRIVEN.</p>
+                <img src="popcat.png" class="absolute top-1/2 -translate-y-1/2 right-10 w-32 opacity-30 hidden md:block" alt="Popcat">
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 px-4 max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row items-center gap-16">
+            <div class="w-full md:w-1/2">
+                <h2 class="text-5xl md:text-7xl meme-font mb-8 text-white">THE <span class="text-green-500">DISTRIBUTION</span></h2>
+                <p class="font-mono text-gray-400 mb-8 leading-relaxed">Most projects lie. We don't. The tokenomics are designed to ensure maximum meme velocity and zero rugs.</p>
+                
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex justify-between font-mono text-sm mb-2 text-green-400"><span>LIQUIDITY POOL</span><span>100%</span></div>
+                        <div class="w-full h-4 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
+                            <div class="h-full bg-green-500 w-0 dist-bar" data-width="100%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between font-mono text-sm mb-2 text-gray-500"><span>TEAM WALLET</span><span>0%</span></div>
+                        <div class="w-full h-4 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
+                            <div class="h-full bg-red-500 w-0 dist-bar" data-width="0%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between font-mono text-sm mb-2 text-gray-500"><span>PRESALE</span><span>0%</span></div>
+                        <div class="w-full h-4 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
+                            <div class="h-full bg-red-500 w-0 dist-bar" data-width="0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 flex justify-center relative">
+                <img src="meme12.webp" class="w-full max-w-md rounded-2xl shadow-[0_0_50px_rgba(57,255,20,0.3)] border-4 border-gray-800 z-10" alt="Core Art">
+                <img src="fwog.png" class="absolute -bottom-10 -right-10 w-40 z-20 drop-shadow-[0_0_20px_white]" alt="Fwog">
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 bg-gray-900 border-y-4 border-gray-800 relative overflow-hidden">
+        <h2 class="text-6xl md:text-8xl meme-font text-center mb-20 text-white z-10 relative">THE TRENCH <span class="text-green-500">MAP</span></h2>
+        
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-gray-800 -translate-x-1/2"></div>
+            
+            <div class="flex flex-col md:flex-row items-center mb-20 roadmap-step opacity-0 translate-y-10">
+                <div class="w-full md:w-1/2 md:pr-12 text-left md:text-right mb-4 md:mb-0 pl-12 md:pl-0">
+                    <h3 class="text-4xl meme-font text-white mb-2">PHASE 1: LAUNCH</h3>
+                    <ul class="font-mono text-gray-400 text-sm space-y-2">
+                        <li>✦ Token Generation</li>
+                        <li>✦ Raydium LP Burn</li>
+                        <li>✦ Website Goes Live</li>
+                        <li>✦ Cult Formation</li>
+                    </ul>
+                </div>
+                <div class="absolute left-4 md:left-1/2 w-6 h-6 bg-green-500 rounded-full border-4 border-black -translate-x-1/2 shadow-[0_0_15px_#39ff14]"></div>
+                <div class="w-full md:w-1/2 md:pl-12 pl-12">
+                    <img src="meme13.webp" class="w-48 rounded-lg border-2 border-gray-700" alt="Phase 1">
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row-reverse items-center mb-20 roadmap-step opacity-0 translate-y-10">
+                <div class="w-full md:w-1/2 md:pl-12 text-left mb-4 md:mb-0 pl-12">
+                    <h3 class="text-4xl meme-font text-white mb-2">PHASE 2: THE TRENCH</h3>
+                    <ul class="font-mono text-gray-400 text-sm space-y-2">
+                        <li>✦ Twitter Trending</li>
+                        <li>✦ DexScreener Ads</li>
+                        <li>✦ Meme Contest ($MEME)</li>
+                        <li>✦ Vibe Check</li>
+                    </ul>
+                </div>
+                <div class="absolute left-4 md:left-1/2 w-6 h-6 bg-gray-600 rounded-full border-4 border-black -translate-x-1/2"></div>
+                <div class="w-full md:w-1/2 md:pr-12 pl-12 md:pl-0 flex justify-end">
+                    <img src="meme14.webp" class="w-48 rounded-lg border-2 border-gray-700" alt="Phase 2">
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center roadmap-step opacity-0 translate-y-10">
+                <div class="w-full md:w-1/2 md:pr-12 text-left md:text-right mb-4 md:mb-0 pl-12 md:pl-0">
+                    <h3 class="text-4xl meme-font text-white mb-2">PHASE 3: ASCENSION</h3>
+                    <ul class="font-mono text-gray-400 text-sm space-y-2">
+                        <li>✦ CEX Listings</li>
+                        <li>✦ Overtaking Utilities</li>
+                        <li>✦ Ultimate Meme Domination</li>
+                    </ul>
+                </div>
+                <div class="absolute left-4 md:left-1/2 w-6 h-6 bg-gray-600 rounded-full border-4 border-black -translate-x-1/2"></div>
+                <div class="w-full md:w-1/2 md:pl-12 pl-12">
+                    <img src="meme15.webp" class="w-48 rounded-lg border-2 border-gray-700" alt="Phase 3">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="chart-section" class="relative min-h-[80svh] flex items-end justify-center overflow-hidden border-t-2 border-gray-800">
+        
+        <div class="order-book" id="order-book"></div>
+
+        <h2 class="absolute top-20 text-4xl md:text-6xl meme-font text-white/20 z-10 text-center w-full">THE ONLY CHART THAT MATTERS</h2>
+
+        <div class="relative z-10 w-full max-w-6xl px-4 flex justify-between items-end h-[600px]">
+            <div class="w-12 md:w-24 bg-red-600 h-24 mb-10 border-2 border-red-800 opacity-80"></div>
+            <div class="w-12 md:w-24 bg-green-800 h-40 mb-16 border-2 border-green-900 opacity-80"></div>
+            <div class="w-12 md:w-24 bg-red-900 h-10 mb-8 border-2 border-red-950 opacity-80"></div>
+            
+            <div class="relative w-40 md:w-80 god-candle h-0 flex justify-center mx-4" id="god-candle">
+                <div class="w-2 h-screen bg-green-300 absolute bottom-0 -z-10 opacity-80 shadow-[0_0_20px_white]"></div> 
+                
+                <img src="popcat.png" class="absolute -top-32 w-32 md:w-48 drop-shadow-[0_0_40px_#fff]" alt="Popcat">
+                <img src="billy.png" class="absolute top-10 -left-20 w-24 drop-shadow-[0_0_20px_#39ff14]" alt="Billy">
+                <img src="catwifmask.jpg" class="absolute top-40 -right-20 w-32 drop-shadow-[0_0_20px_blue]" alt="Catwifmask">
+                
+                <div class="absolute top-1/2 text-black font-black text-4xl md:text-7xl -rotate-90 meme-font whitespace-nowrap opacity-70">SEND IT HIGHER</div>
+            </div>
+            
+            <div class="w-12 md:w-24 bg-green-900 h-20 mb-2 border-2 border-green-950 opacity-80"></div>
+            <div class="w-12 md:w-24 bg-red-600 h-32 mb-4 border-2 border-red-800 opacity-80"></div>
+        </div>
+    </section>
+
+    <footer class="bg-black py-12 border-t-4 border-green-500 text-center px-4 relative overflow-hidden">
+        <h2 class="text-4xl meme-font text-white mb-6 glitch">RETURN TO MEMES</h2>
+        <p class="font-mono text-gray-500 text-xs max-w-2xl mx-auto mb-8">
+            $MEME is a meme coin with no intrinsic value or expectation of financial return. There is no formal team or roadmap. The coin is completely useless and for entertainment purposes only. Don't risk what you can't afford to lose in the trenches.
+        </p>
+        <button onclick="window.location.href='buy.html'" class="bg-transparent border-2 border-green-500 text-green-500 px-8 py-3 font-black meme-font hover:bg-green-500 hover:text-black transition-colors rounded-lg tracking-widest text-xl">
+            ENTER APEDOM
+        </button>
+        <img src="clippy.png" class="absolute bottom-5 left-5 w-16 opacity-30" alt="Clippy">
+    </footer>
+
+    <script>
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+        });
+        document.addEventListener('mousedown', () => cursor.style.borderColor = 'red');
+        document.addEventListener('mouseup', () => cursor.style.borderColor = '#39ff14');
+
+        // Navbar Hide/Show
+        let lastScroll = window.scrollY;
+        const nav = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if(window.scrollY > 100 && window.scrollY > lastScroll) {
+                nav.style.transform = 'translateY(-100%)';
+            } else {
+                nav.style.transform = 'translateY(0)';
+            }
+            lastScroll = window.scrollY;
+        });
+
+        // Copy CA
+        const copyBtn = document.getElementById('copy-ca');
+        const caText = document.getElementById('ca-text').innerText;
+        const hitmarker = document.getElementById('hitmarker');
+
+        copyBtn.addEventListener('click', (e) => {
+            navigator.clipboard.writeText(caText);
+            hitmarker.style.left = `${e.clientX}px`;
+            hitmarker.style.top = `${e.clientY}px`;
+            
+            gsap.fromTo(hitmarker, 
+                { scale: 0, opacity: 1, rotation: 0 }, 
+                { scale: 1.5, opacity: 0, rotation: 45, duration: 0.4, ease: "power2.out" }
+            );
+
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = `<span class="text-4xl md:text-5xl meme-font text-white drop-shadow-[0_0_15px_#39ff14] w-full text-center py-2">COPIED TO CLIPBOARD</span>`;
+            setTimeout(() => { copyBtn.innerHTML = originalHTML; }, 2000);
+        });
+
+        // Matrix Order Book Background Generation
+        const ob = document.getElementById('order-book');
+        for(let i=0; i<10; i++) {
+            let col = document.createElement('div');
+            col.className = 'order-col';
+            col.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            let content = '';
+            for(let j=0; j<50; j++) {
+                let isBuy = Math.random() > 0.3; // More green
+                let price = (Math.random() * 0.005).toFixed(6);
+                let amt = Math.floor(Math.random() * 100000);
+                content += `<div class="${isBuy ? 'text-buy' : 'text-sell'}">${price} | ${amt}</div>`;
+            }
+            col.innerHTML = content;
+            ob.appendChild(col);
+        }
+
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Header Load
+        gsap.to(".title-anim", {
+            y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power4.out", delay: 0.2
+        });
+
+        // Floating Art Backgrounds
+        gsap.to(".float-anim", {
+            y: 20, rotation: 5, duration: 4, yoyo: true, repeat: -1, ease: "sine.inOut"
+        });
+
+        // Stat Cards
+        gsap.to(".stat-card", {
+            scrollTrigger: { trigger: ".stat-card", start: "top 85%" },
+            y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "back.out(1.5)"
+        });
+
+        // Counter
+        let supplyObj = { val: 0 };
+        gsap.to(supplyObj, {
+            scrollTrigger: { trigger: "#supply-counter", start: "top 90%" },
+            val: 1000000000, duration: 2, ease: "power2.out",
+            onUpdate: () => document.getElementById('supply-counter').innerText = Math.floor(supplyObj.val).toLocaleString()
+        });
+
+        // Distribution Bars
+        gsap.utils.toArray('.dist-bar').forEach(bar => {
+            gsap.to(bar, {
+                scrollTrigger: { trigger: bar, start: "top 90%" },
+                width: bar.getAttribute('data-width'), duration: 1.5, ease: "power3.out"
+            });
+        });
+
+        // Roadmap Steps
+        gsap.utils.toArray('.roadmap-step').forEach(step => {
+            gsap.to(step, {
+                scrollTrigger: { trigger: step, start: "top 80%" },
+                y: 0, opacity: 1, duration: 0.8, ease: "power2.out"
+            });
+        });
+
+        // God Candle
+        gsap.to("#god-candle", {
+            scrollTrigger: { trigger: "#chart-section", start: "top 60%" },
+            height: "180%", duration: 3, ease: "power4.out"
+        });
+    </script>
+</body>
+</html>
